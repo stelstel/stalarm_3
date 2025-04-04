@@ -1,0 +1,7 @@
+app/__pycache__/
+build/
+
+# Ignore everything in dist/
+dist/*
+# But don't ignore config.ini or app.exe
+!dist/config.ini
