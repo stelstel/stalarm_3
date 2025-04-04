@@ -1,3 +1,7 @@
+# app.py
+# Author: Stefan Elmgren
+# Date: 2025-03-21 - 2025-04-04
+
 # from flask import Flask
 # from flask import render_template
 # import json

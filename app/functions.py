@@ -88,7 +88,7 @@ def custom_sort(df):
     """
     Sort the DataFrame based on specific conditions:
     1. Rows where increase_limit_reached_after_decrease_limit_reached = True and decrease_limit_reached = True.
-    2. Rows where increase_limit_reached_after_decrease_limit_reached = False and decrease_limit_reached = True.
+    2. Rows where  decrease_limit_reached = True and increase_limit_reached_after_decrease_limit_reached = False.
     3. Rows where decrease_limit_reached = False.
 
     Args:
@@ -99,11 +99,9 @@ def custom_sort(df):
     """
     # Create a custom sort key based on the conditions:
     df['custom_sort'] = (
-        (df['Inc. lim. reached after dec. lim. reached'] == True) &
-        (df['Dec. lim. reached'] == True)
+        (df['Inc. lim. reached after dec. lim. reached'] == True) & (df['Dec. lim. reached'] == True)
     ).astype(int) * 2 + (
-        (df['Inc. lim. reached after dec. lim. reached'] == False) &
-        (df['Dec. lim. reached'] == True)
+        (df['Inc. lim. reached after dec. lim. reached'] == False) & (df['Dec. lim. reached'] == True)
     ).astype(int) * 1
 
     # Sort the DataFrame based on the custom_sort column

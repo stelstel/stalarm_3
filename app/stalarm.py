@@ -1,6 +1,6 @@
 # stalarm.py
 # Author: Stefan Elmgren
-# Date: 2025-03-21 - 2025-03-31
+# Date: 2025-03-21 - 2025-04-04
 
 # Description: A simple stock alarm program that checks if the stock price goes down beyond
 #   a specified decrease limit, then rises again after hitting that low. 
@@ -10,6 +10,8 @@
 # TODO Expand msg_to_user
 # TODO Every stock should have their own inc_limit, dec_limit, and start_date ???
 # TODO Add links to stocks
+# TODO add sound alarm
+# TODO change < to <=
 
 import yfinance as yahooFinance
 import os
