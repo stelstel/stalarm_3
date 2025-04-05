@@ -8,6 +8,10 @@ import configparser
 from datetime import datetime
 import pytz
 
+sys.path.append("dist")
+
+from config import stocks, settings
+
 def read_config_ini():
     """
     Loads the stock monitoring configuration from 'config.ini'.
@@ -22,6 +26,13 @@ def read_config_ini():
             - start_date (datetime): The start date for monitoring stock data.
     """
 
+    print(stocks["symbols"]) # /////////////////////////////////
+    symbols = stocks["symbols"]  # This is a list of dictionaries
+    price_decimals = settings["max_price_decimals"]
+    # stock_name = stocks["symbols"]["name"].replace(" ", "")  # Removes spaces
+    # alarm_limit_decrease = settings["alarm_limit_decrease"]
+    # alarm_limit_increase_after_decrease = settings["alarm_limit_increase_after_decrease"]
+
     # # Define the path to the config file
     # if getattr(sys, 'frozen', False):  # Check if running as a compiled executable
     #     # If running as .exe, the config is in the _MEIPASS folder
@@ -31,42 +42,43 @@ def read_config_ini():
     #     # config_file_path = os.path.join(os.path.dirname(__file__), 'app')
     #     config_file_path = os.path.dirname(__file__)
 
-    if getattr(sys, 'frozen', False):
-        config_file_path = os.path.dirname(sys.executable)
-    else:
-        config_file_path = os.path.dirname(__file__)
+    # if getattr(sys, 'frozen', False):
+    #     config_file_path = os.path.dirname(sys.executable)
+    # else:
+    #     config_file_path = os.path.dirname(__file__)
 
-    config_file = "config.ini"
-
-    print(f"Loading config from: {config_file_path}\{config_file}") # /////////////////////////////////
-
+    # config_file = "config.py"
+    # print(f"Loading config from: {config_file_path}\{config_file}") # /////////////////////////////////
 
     # Load the config file
-    config = configparser.ConfigParser()
+    #config = configparser.ConfigParser()
 
-    full_path = os.path.join(config_file_path, config_file) # ////////////////////////////////
-    print("FULL CONFIG PATH:", full_path) # ////////////////////////////////
-    print("EXISTS?", os.path.exists(full_path)) # ////////////////////////////////
+    # full_path = os.path.join(config_file_path, config_file) # ////////////////////////////////
+    # print("FULL CONFIG PATH:", full_path) # ////////////////////////////////
+    # print("EXISTS?", os.path.exists(full_path)) # ////////////////////////////////
 
 
-    config.read(os.path.join(config_file_path, config_file))
-    stock_symbols = config["stocks"]["symbols"].replace(" ", "")  # Removes spaces
-    symbols = stock_symbols.split(",")  # Converts to a list
+    # config.read(os.path.join(config_file_path, config_file))
+    # stock_symbols = config["stocks"]["symbols"].replace(" ", "")  # Removes spaces
+    # symbols = stock_symbols.split(",")  # Converts to a list
+    # alarm_limit_increase_after_decrease = config["settings"]["alarm_limit_increase_after_decrease"]
+    # # Read the alarm limit decrease and increase values as floats
 
-    # Read limits as floats
-    alarm_limit_decrease = float(config["settings"]["alarm_limit_decrease"])
-    alarm_limit_increase_after_decrease = float(config["settings"]["alarm_limit_increase_after_decrease"])
+    # # Read limits as floats
+    # alarm_limit_decrease = float(config["settings"]["alarm_limit_decrease"])
+    # alarm_limit_increase_after_decrease = float(config["settings"]["alarm_limit_increase_after_decrease"])
 
-    # Read start date as a datetime object
-    start_date = datetime.strptime(config["settings"]["start_date"], "%Y-%m-%d")
+    # # Read start date as a datetime object
+    # start_date = datetime.strptime(config["settings"]["start_date"], "%Y-%m-%d")
 
-    # Ensure that start_date is in the same timezone as historical_data.index
-    sweden_tz = pytz.timezone("Europe/Stockholm")
-    start_date = sweden_tz.localize(start_date) if start_date.tzinfo is None else start_date
+    # # Ensure that start_date is in the same timezone as historical_data.index
+    # sweden_tz = pytz.timezone("Europe/Stockholm")
+    # start_date = sweden_tz.localize(start_date) if start_date.tzinfo is None else start_date
 
-    price_decimals = int(config["settings"]["max_price_decimals"])
+    # price_decimals = int(config["settings"]["max_price_decimals"])
 
-    return symbols, alarm_limit_decrease, alarm_limit_increase_after_decrease, start_date, price_decimals
+    # return symbols, alarm_limit_decrease, alarm_limit_increase_after_decrease, start_date, price_decimals
+    return symbols, price_decimals
 
 
 def convert_to_swedish_timezone(timestamp):

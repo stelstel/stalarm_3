@@ -6,9 +6,10 @@
 #   a specified decrease limit, then rises again after hitting that low. 
 #   Alerts are triggered based on this behavior using data fetched from Yahoo Finance.
 
+# TODO Every stock should have their own inc_limit, dec_limit, and start_date ???
+# TODO add columns inc and dec
 # TODO add update_frequency
 # TODO Expand msg_to_user
-# TODO Every stock should have their own inc_limit, dec_limit, and start_date ???
 # TODO Add links to stocks
 # TODO add sound alarm
 # TODO change < to <=
@@ -17,6 +18,7 @@ import yfinance as yahooFinance
 import os
 import pandas as pd
 import pytz
+from datetime import datetime
 
 from functions import read_config_ini, custom_sort, convert_to_swedish_timezone
 
@@ -26,14 +28,29 @@ os.system('cls')
 start_time_swedish = "N/A"
 
 # Read configuration
-symbols, alarm_limit_decrease, alarm_limit_increase_after_decrease, start_date, price_decimals = read_config_ini()
+symbols, price_decimals = read_config_ini()
 
 # List to store stock data
 stock_data = []
 
 for symbol in symbols:
     try:
-        stock_info = yahooFinance.Ticker(symbol)
+        stock_info = yahooFinance.Ticker(symbol["name"])
+
+        start_date_str = symbol["start_date"]
+        # start_date = datetime.strptime(start_date_str, "%d-%m-%y").strftime("%d-%m-%y %H:%M")
+        # start_date = datetime.strptime(start_date_str, "%Y-%m-%d").strftime("%d-%m-%y")
+
+        # Convert the string to a datetime object (this will work because it's in the correct format)
+        start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+
+        # Format the datetime object to get the date in YYYY-MM-DD format
+        # start_date = start_date_obj.strftime("%Y-%m-%d")
+
+
+        alarm_limit_decrease = symbol["decrease_limit"] # Percentage decrease limit
+        alarm_limit_increase_after_decrease = symbol["increase_limit"] # Percentage increase limit
+        # price_decimals = symbols["max_price_decimals"] # Maximum number of decimals to show in prices
 
         # Fetch stock data
         stock_data_dict = stock_info.get_info()
@@ -53,9 +70,18 @@ for symbol in symbols:
         if historical_data.empty:
             raise ValueError(f"No historical data available for {symbol} since {start_date}")
         
+        print(type(historical_data.index)) # //////////////////////////////////////////////////////// delete
+
         # If start_date is missing, find the closest next available date
-        if start_date not in historical_data.index:
-            closest_dates = historical_data.index[historical_data.index > start_date]  # Find future dates
+        # Ensure start_date is a pandas Timestamp and has the same timezone if necessary
+        start_date = pd.to_datetime(start_date)
+
+        # If historical_data.index has timezone information, align start_date with it
+        if historical_data.index.tz is not None:
+            start_date = start_date.tz_localize('Europe/Stockholm', ambiguous='NaT')  # Localize start_date to the same timezone
+
+            # Now you can compare it with historical_data.index
+            closest_dates = historical_data.index[historical_data.index > start_date]
 
             if not closest_dates.empty:
                 start_date = closest_dates[0]  # Use the first available future date
@@ -121,7 +147,7 @@ for symbol in symbols:
             raise ValueError(f"No data available for {symbol} on {start_date}, latest available is {historical_data.index[-1]}")
 
     except Exception as e:
-        msg_to_user = f"Error fetching data for {symbol}, Is this symbol correct? Check at https://finance.yahoo.com/lookup/"
+        msg_to_user = f"Error fetching data for {symbol["name"]}, Is this symbol correct? Check at https://finance.yahoo.com/lookup/"
         # company_name = start_date, opening_price_historical = lowest_price_historical = lowest_price_time_swedish = highest_price_historical = highest_price_time_swedish = decrease_limit_reached = increase_limit_reached_after_decrease_limit_reached = "N/A"
         company_name = "N/A"
         start_date = "N/A"
@@ -138,7 +164,7 @@ for symbol in symbols:
 
     stock_data.append({
         "Company name": company_name,
-        "Symbol": symbol,
+        "Symbol": symbol["name"],
         "Actual start date": start_time_swedish,
         "Opening price": round(opening_price_historical, price_decimals),
         "Lowest price": round(lowest_price_historical, price_decimals),

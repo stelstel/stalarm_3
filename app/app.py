@@ -1,6 +1,4 @@
 # app.py
-# Author: Stefan Elmgren
-# Date: 2025-03-21 - 2025-04-04
 
 # from flask import Flask
 # from flask import render_template
@@ -41,7 +39,6 @@ app = Flask(
     template_folder=resource_path("templates"),
     static_folder=resource_path("static")
 )
-
 
 app.config["DEBUG"] = True
 
