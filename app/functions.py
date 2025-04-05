@@ -12,6 +12,18 @@ sys.path.append("dist")
 
 from config import stocks, settings
 
+# # Add the absolute path to the dist folder
+# dist_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'dist'))
+# print(f"Adding to sys.path: {dist_folder}")
+# sys.path.append(dist_folder)
+
+# # Try importing config after adding to sys.path
+# try:
+#     from dist.config import stocks, settings
+# except ImportError as e:
+#     print(f"Error importing: {e}")
+#     sys.exit(1)  # Exit if the import fails
+
 def read_config_ini():
     """
     Loads the stock monitoring configuration from 'config.ini'.
@@ -26,7 +38,7 @@ def read_config_ini():
             - start_date (datetime): The start date for monitoring stock data.
     """
 
-    print(stocks["symbols"]) # /////////////////////////////////
+    # print(stocks["symbols"]) # /////////////////////////////////
     symbols = stocks["symbols"]  # This is a list of dictionaries
     price_decimals = settings["max_price_decimals"]
     # stock_name = stocks["symbols"]["name"].replace(" ", "")  # Removes spaces

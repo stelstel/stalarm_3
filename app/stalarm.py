@@ -70,8 +70,6 @@ for symbol in symbols:
         if historical_data.empty:
             raise ValueError(f"No historical data available for {symbol} since {start_date}")
         
-        print(type(historical_data.index)) # //////////////////////////////////////////////////////// delete
-
         # If start_date is missing, find the closest next available date
         # Ensure start_date is a pandas Timestamp and has the same timezone if necessary
         start_date = pd.to_datetime(start_date)
